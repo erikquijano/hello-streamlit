@@ -41,13 +41,9 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from streamlit.logger import get_logger
 
-LOGGER = get_logger(__name__)
-
-
 st.set_page_config(page_title="Automobile case study", page_icon="🚗")
-st.markdown("# Automobile case study")
 st.sidebar.header("Automobile case study")
-st.write("# Automobile case study 👋")
+st.write("# Automobile case study 🚗")
 st.markdown(
         """
         ABC Cardeals Pvt Ltd maintains caller’s data who are looking to buy new or used cars. Prospects can call or write an email and a support is given in terms of choosing the desired cars. 
