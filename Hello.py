@@ -14,6 +14,9 @@
 
 import streamlit as st
 import pandas as pd
+import os
+import seaborn as sns
+import matplotlib.pyplot as plt
 from streamlit.logger import get_logger
 
 LOGGER = get_logger(__name__)
@@ -92,7 +95,7 @@ st.write(best_year)
 # Adding combined manufacturer and model column
 st.write("## Combine manufacturer and model")
 df['make_model'] = df['Manufacturer'] + ' ' + df['Model']
-st.write(df.head())
+#st.write(df.head())
 
 # Distance grading
 def grade_dist(dist):
@@ -106,8 +109,8 @@ def grade_dist(dist):
         return 'very far'
 
 df['Distance scale'] = df['DistanceToDealer'].apply(grade_dist)
-st.write("## Distance Grading")
-st.write(df.head())
+#st.write("## Distance Grading")
+#st.write(df.head())
 
 # Most common distance
 st.write("## Most common distance to dealer")
@@ -118,6 +121,15 @@ st.write(df.groupby('Distance scale').size().reset_index(name='Count'))
 st.write("## Average car value by manufacturer")
 #if st.button("Show Average Values"):
 st.write(df.groupby(['Manufacturer'])['Car Value'].mean())
+
+# Box plot for Car Value by Manufacturer
+st.write("## Box Plot of Car Values by Manufacturer")
+#if st.button("Show Box Plot"):
+plt.figure(figsize=(12, 6))
+sns.boxplot(x='Manufacturer', y='Car Value', data=df)
+plt.xticks(rotation=45)
+plt.tight_layout()
+st.pyplot(plt)
 
 # State with highest leads
 st.write("## State with highest number of leads")
