@@ -131,6 +131,15 @@ plt.xticks(rotation=45)
 plt.tight_layout()
 st.pyplot(plt)
 
+# Scatter Plot of Car Value by State
+st.write("## Scatter Plot of Car Values by State")
+#if st.button("Show Scatter Plot"):
+plt.figure(figsize=(12, 6))
+sns.scatterplot(x='State', y='Car Value', data=df, alpha=0.6)
+plt.xticks(rotation=90)  # Rotate state names for better visibility
+plt.tight_layout()
+st.pyplot(plt)
+
 # State with highest leads
 st.write("## State with highest number of leads")
 df['lead_sum'] = df[['Within24', 'Within48', 'Within72', 'WithinWeek', 'WithinWeeks', 'WithinMonth']].sum(axis=1)
@@ -149,4 +158,9 @@ st.write("## Manufacturer market share")
 total_market = df['Car Value'].sum()
 df_make = df.groupby('Manufacturer')['Car Value'].sum().reset_index(name='Revenue')
 df_make['Revenue Share %'] = (df_make['Revenue'] / total_market) * 100
+fig, ax = plt.subplots()
+ax.pie(df_make['Revenue Share %'], labels=df_make['Manufacturer'], autopct='%1.1f%%', startangle=90)
+ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+plt.title('Manufacturer Market Share')
+st.pyplot(fig)
 st.write(df_make)
