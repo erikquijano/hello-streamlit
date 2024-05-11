@@ -18,6 +18,7 @@ import numpy as np
 
 import streamlit as st
 from streamlit.hello.utils import show_code
+from auth import check_login, login, logout
 
 
 # Copyright (c) Streamlit Inc. (2018-2022) Snowflake Inc. (2022)
