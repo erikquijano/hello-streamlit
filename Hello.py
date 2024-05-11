@@ -25,25 +25,13 @@ def run():
         page_icon="👋",
     )
 
-    st.write("# Welcome to Streamlit! 👋")
+    st.write("# Automobile case study 👋")
 
     st.sidebar.success("Select a demo above.")
 
     st.markdown(
         """
-        Streamlit is an open-source app framework built specifically for
-        Machine Learning and Data Science projects.
-        **👈 Select a demo from the sidebar** to see some examples
-        of what Streamlit can do!
-        ### Want to learn more?
-        - Check out [streamlit.io](https://streamlit.io)
-        - Jump into our [documentation](https://docs.streamlit.io)
-        - Ask a question in our [community
-          forums](https://discuss.streamlit.io)
-        ### See more complex demos
-        - Use a neural net to [analyze the Udacity Self-driving Car Image
-          Dataset](https://github.com/streamlit/demo-self-driving)
-        - Explore a [New York City rideshare dataset](https://github.com/streamlit/demo-uber-nyc-pickups)
+        ABC Cardeals Pvt Ltd maintains caller’s data who are looking to buy new or used cars. Prospects can call or write an email and a support is given in terms of choosing the desired cars. 
     """
     )
 
@@ -58,35 +46,27 @@ def load_data():
 
 df = load_data()
 
-st.write("### Data Overview")
-st.dataframe(df.head())
-
-# User interaction for defining variable types
-st.write("## Define variable types.")
-if st.button("Show Data Types"):
-    st.write(df.dtypes)
-
 # Summary statistics
 st.write("## Summary of each variable")
-if st.button("Show Summary"):
-    st.write(df.describe())
+#if st.button("Show Summary"):
+st.write(df.describe())
 
 # Most common contact method
 st.write("## Most commonly used mode of contact")
-if st.button("Calculate Contact Methods"):
-    contact_method = df[['ContactByEmail', 'ContactByTelephone']].sum()
-    st.write(contact_method)
+#if st.button("Calculate Contact Methods"):
+contact_method = df[['ContactByEmail', 'ContactByTelephone']].sum()
+st.write(contact_method)
 
 # Lead time preference
 st.write("## Period most leads prefer to buy the car")
-if st.button("Calculate Lead Time Preference"):
-    lead_period = df[['Within24', 'Within48', 'Within72', 'WithinWeek', 'WithinWeeks', 'WithinMonth']].sum()
-    st.write(lead_period)
+#if st.button("Calculate Lead Time Preference"):
+lead_period = df[['Within24', 'Within48', 'Within72', 'WithinWeek', 'WithinWeeks', 'WithinMonth']].sum()
+st.write(lead_period)
 
 # Lead providers
 st.write("## Best and worst lead provider")
-if st.button("Show Lead Providers"):
-    lead_provider = df.groupby(['LeadProvider_Id'])['Car Value'].sum()
+##if st.button("Show Lead Providers"):
+lead_provider = df.groupby(['LeadProvider_Id'])['Car Value'].sum()
     st.write(lead_provider)
 
 # New car preference
