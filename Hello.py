@@ -42,125 +42,45 @@ def run():
 if __name__ == "__main__":
     run()
 
-# Function to load data
-#@st.cache
-def load_data():
-    return pd.read_csv("auto.csv")
+import streamlit as st
 
-df = load_data()
+# Create session state variables for managing login status and user session
+if 'login_status' not in st.session_state:
+    st.session_state['login_status'] = False
 
-# Summary statistics
-st.write("## Summary of each variable")
-#if st.button("Show Summary"):
-st.write(df.describe())
-
-# Most common contact method
-st.write("## Most commonly used mode of contact")
-#if st.button("Calculate Contact Methods"):
-contact_method = df[['ContactByEmail', 'ContactByTelephone']].sum()
-st.write(contact_method)
-
-# Lead time preference
-st.write("## Period most leads prefer to buy the car")
-#if st.button("Calculate Lead Time Preference"):
-lead_period = df[['Within24', 'Within48', 'Within72', 'WithinWeek', 'WithinWeeks', 'WithinMonth']].sum()
-st.write(lead_period)
-
-# Lead providers
-st.write("## Best and worst lead provider")
-##if st.button("Show Lead Providers"):
-lead_provider = df.groupby(['LeadProvider_Id'])['Car Value'].sum()
-st.write(lead_provider)
-
-# New car preference
-st.write("## Preference for new cars")
-#if st.button("Show New Car Preference"):
-st.write(df['Status'].value_counts())
-
-# Most demanded models by state
-st.write("## Most demanded car models by state")
-#if st.button("Show Demanded Models"):
-model_demand = df.groupby(['State', 'Model']).size().reset_index(name='Count')
-most_demanded_models = model_demand.loc[model_demand.groupby('State')['Count'].idxmax()]
-st.write(most_demanded_models)
-
-# Best year for Toyota
-st.write("## Best year for Toyota")
-#if st.button("Show Best Year for Toyota"):
-toyota_df = df[df['Manufacturer'] == 'Toyota']
-yearly_sales = toyota_df.groupby('TradeInModelYear').size().reset_index(name='Count')
-best_year = yearly_sales[yearly_sales['Count'] == yearly_sales['Count'].max()]
-st.write(best_year)
-
-# Adding combined manufacturer and model column
-st.write("## Combine manufacturer and model")
-df['make_model'] = df['Manufacturer'] + ' ' + df['Model']
-#st.write(df.head())
-
-# Distance grading
-def grade_dist(dist):
-    if dist < 10:
-        return 'very near'
-    elif dist < 50:
-        return 'near'
-    elif dist < 100:
-        return 'far'
+def login(username, password):
+    # Simple check for username and password
+    if username == "admin" and password == "testuser20":
+        st.session_state['login_status'] = True
     else:
-        return 'very far'
+        st.session_state['login_status'] = False
+        st.error("Incorrect Username or Password")
 
-df['Distance scale'] = df['DistanceToDealer'].apply(grade_dist)
-#st.write("## Distance Grading")
-#st.write(df.head())
+def logout():
+    st.session_state['login_status'] = False
 
-# Most common distance
-st.write("## Most common distance to dealer")
-#if st.button("Show Common Distances"):
-st.write(df.groupby('Distance scale').size().reset_index(name='Count'))
+# Layout for login
+def main():
+    st.title("Streamlit Application")
 
-# Manufacturer average car value
-st.write("## Average car value by manufacturer")
-#if st.button("Show Average Values"):
-st.write(df.groupby(['Manufacturer'])['Car Value'].mean())
+    # Check if the user is logged in
+    if st.session_state['login_status']:
+        st.success("Logged in as admin")
+        st.button("Logout", on_click=logout)
+        # Your application code goes here
+        st.write("Welcome to the secure part of the app!")
 
-# Box plot for Car Value by Manufacturer
-st.write("## Box Plot of Car Values by Manufacturer")
-#if st.button("Show Box Plot"):
-plt.figure(figsize=(12, 6))
-sns.boxplot(x='Manufacturer', y='Car Value', data=df)
-plt.xticks(rotation=45)
-plt.tight_layout()
-st.pyplot(plt)
+    else:
+        # Login form
+        with st.form("login_form"):
+            username = st.text_input("Username")
+            password = st.text_input("Password", type="password")
+            login_button = st.form_submit_button("Login", on_click=login, args=(username, password))
+            if login_button:
+                if st.session_state['login_status']:
+                    st.success("Login Successful!")
+                else:
+                    st.error("Login Failed. Try Again!")
 
-# State with highest leads
-st.write("## State with highest number of leads")
-df['lead_sum'] = df[['Within24', 'Within48', 'Within72', 'WithinWeek', 'WithinWeeks', 'WithinMonth']].sum(axis=1)
-state_sales = df.groupby(['State'])['lead_sum'].size().reset_index(name='Count')
-best_state = state_sales[state_sales['Count'] == state_sales['Count'].max()]
-st.write(best_state)
-
-# City wise maximum car deal value
-st.write("## City wise max value of car deal")
-#if st.button("Show Max Car Values by City"):
-st.write(df.groupby(['City'])['Car Value'].max().sort_values(ascending=False))
-
-# Manufacturer market share
-st.write("## Manufacturer Market Share")
-total_market = df['Car Value'].sum()
-df_make = df.groupby('Manufacturer')['Car Value'].sum().reset_index(name='Revenue')
-df_make['Revenue Share %'] = (df_make['Revenue'] / total_market) * 100
-df_make = df_make.sort_values(by='Revenue Share %', ascending=False)
-
-# Layout for displaying table and pie chart side by side
-col1, col2 = st.columns(2)
-
-with col1:
-    st.write("### Market Share Table")
-    st.dataframe(df_make.style.format({'Revenue Share %': "{:.2f}%"}))
-
-with col2:
-    st.write("### Market Share Pie Chart")
-    fig, ax = plt.subplots()
-    ax.pie(df_make['Revenue Share %'], labels=df_make['Manufacturer'], autopct='%1.1f%%', startangle=90)
-    ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-    plt.title('Manufacturer Market Share')
-    st.pyplot(fig)
+if __name__ == "__main__":
+    main()
