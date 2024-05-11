@@ -153,14 +153,23 @@ st.write("## City wise max value of car deal")
 st.write(df.groupby(['City'])['Car Value'].max().sort_values(ascending=False))
 
 # Manufacturer market share
-st.write("## Manufacturer market share")
-#if st.button("Calculate Market Share"):
+st.write("## Manufacturer Market Share")
 total_market = df['Car Value'].sum()
 df_make = df.groupby('Manufacturer')['Car Value'].sum().reset_index(name='Revenue')
 df_make['Revenue Share %'] = (df_make['Revenue'] / total_market) * 100
-fig, ax = plt.subplots()
-ax.pie(df_make['Revenue Share %'], labels=df_make['Manufacturer'], autopct='%1.1f%%', startangle=90)
-ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-plt.title('Manufacturer Market Share')
-st.pyplot(fig)
-st.write(df_make)
+df_make = df_make.sort_values(by='Revenue Share %', ascending=False)
+
+# Layout for displaying table and pie chart side by side
+col1, col2 = st.columns(2)
+
+with col1:
+    st.write("### Market Share Table")
+    st.dataframe(df_make.style.format({'Revenue Share %': "{:.2f}%"}))
+
+with col2:
+    st.write("### Market Share Pie Chart")
+    fig, ax = plt.subplots()
+    ax.pie(df_make['Revenue Share %'], labels=df_make['Manufacturer'], autopct='%1.1f%%', startangle=90)
+    ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+    plt.title('Manufacturer Market Share')
+    st.pyplot(fig)
