@@ -67,7 +67,7 @@ st.write(lead_period)
 st.write("## Best and worst lead provider")
 ##if st.button("Show Lead Providers"):
 lead_provider = df.groupby(['LeadProvider_Id'])['Car Value'].sum()
-    st.write(lead_provider)
+st.write(lead_provider)
 
 # New car preference
 st.write("## Preference for new cars")
