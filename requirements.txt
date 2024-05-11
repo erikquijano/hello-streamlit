@@ -2,4 +2,7 @@ altair
 numpy
 pandas
 pydeck
+seaborn
+os
+matplotlib.pyplot
 streamlit
