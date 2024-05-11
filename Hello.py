@@ -19,47 +19,46 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from streamlit.logger import get_logger
 
-# Initialize session state for login status if not already set
-if 'login_status' not in st.session_state:
-    st.session_state['login_status'] = False
+import streamlit as st
+from auth import check_login, login, logout
 
-def login(username, password):
-    if username == "admin" and password == "testuser20":
-        st.session_state['login_status'] = True
-    else:
-        st.session_state['login_status'] = False
-        st.error("Incorrect Username or Password")
+def main_page():
+    st.title("Main Page")
+    st.write("This is the main page of the application.")
 
-def logout():
-    st.session_state['login_status'] = False
+def secure_page():
+    st.title("Secure Page")
+    st.write("This page contains sensitive data.")
+
+def login_page():
+    with st.form("login_form", clear_on_submit=True):
+        username = st.text_input("Username")
+        password = st.text_input("Password", type="password")
+        submitted = st.form_submit_button("Login")
+        if submitted and login(username, password):
+            st.success("Login Successful!")
+        elif submitted:
+            st.error("Login Failed. Try Again!")
 
 def main():
-    st.title("Streamlit Application")
+    st.sidebar.title("Navigation")
+    pages = {
+        "Login": login_page,
+        "Main Page": main_page,
+        "Secure Page": secure_page
+    }
 
-    if st.session_state['login_status']:
-        st.success("Logged in as admin")
-
-        # Here you could place the sidebar content that should only be visible when logged in
-        with st.sidebar:
-            st.write("Sidebar content for logged-in users")
-            if st.button("Logout", key="logout_button"):
-                logout()
-
-        # Main page content for logged-in users
-        st.write("Welcome to the secure part of the app!")
-
+    if check_login():
+        pages["Logout"] = logout
+        choice = st.sidebar.radio("Choose a page", list(pages.keys()))
+        if choice == "Logout":
+            logout()
+            st.sidebar.success("You have been logged out.")
+            st.experimental_rerun()
+        else:
+            pages[choice]()
     else:
-        # Only show login form if not logged in
-        with st.form("login_form", clear_on_submit=True):
-            username = st.text_input("Username", key="username")
-            password = st.text_input("Password", type="password", key="password")
-            login_button = st.form_submit_button("Login")
-            if login_button:
-                login(username, password)
-                if st.session_state['login_status']:
-                    st.success("Login Successful!")
-                else:
-                    st.error("Login Failed. Try Again!")
+        login_page()
 
 if __name__ == "__main__":
     main()
