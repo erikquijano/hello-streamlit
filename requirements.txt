@@ -3,6 +3,5 @@ numpy
 pandas
 pydeck
 seaborn
-os
 matplotlib
 streamlit
