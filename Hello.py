@@ -40,7 +40,7 @@ if __name__ == "__main__":
     run()
 
 # Function to load data
-@st.cache
+#@st.cache
 def load_data():
     return pd.read_csv("auto.csv")
 
