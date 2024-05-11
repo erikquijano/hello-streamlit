@@ -59,15 +59,13 @@ def load_data():
 df = load_data()
 
 def automobile_case_study():
-    st.title("Automobile Case Study")
-
-# Summary statistics
-st.write("## Summary of each variable")
-#if st.button("Show Summary"):
-st.write(df.describe())
-
-# Most common contact method
-st.write("## Most commonly used mode of contact")
+        st.title("Automobile Case Study")
+        # Summary statistics
+        st.write("## Summary of each variable")
+        #if st.button("Show Summary"):
+        st.write(df.describe())
+        # Most common contact method
+        st.write("## Most commonly used mode of contact")
 #if st.button("Calculate Contact Methods"):
 contact_method = df[['ContactByEmail', 'ContactByTelephone']].sum()
 st.write(contact_method)
